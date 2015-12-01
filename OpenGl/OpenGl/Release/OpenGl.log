@@ -1,15 +1,14 @@
-﻿Build started 30/11/2015 18:08:52.
+﻿Build started 01/12/2015 13:01:05.
      1>Project "C:\Users\avbar\Documents\GitHub\OpenGl\OpenGl\OpenGl\OpenGl.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /IC:\Users\avbar\Documents\GitHub\OpenGl\OpenGl\packages\nupengl.core.0.1.0.1\build\native\../..//build/native/include/ /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\\" /AI"C:\Program Files (x86)\Windows Kits\8.1\References\CommonConfiguration\Neutral" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\\" /Zi /clr /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Release\\" /Fd"Release\vc140.pdb" /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\mscorlib.dll" /analyze- /errorReport:prompt /clr:nostdlib Source.cpp
-         Source.cpp
-     1>Source.cpp(90): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /IC:\Users\avbar\Documents\GitHub\OpenGl\OpenGl\packages\nupengl.core.0.1.0.1\build\native\../..//build/native/include/ /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\\" /AI"C:\Program Files (x86)\Windows Kits\8.1\References\CommonConfiguration\Neutral" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\\" /Zi /clr /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Release\\" /Fd"Release\vc140.pdb" /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\mscorlib.dll" /analyze- /errorReport:prompt /clr:nostdlib OpenGl.cpp
+         OpenGl.cpp
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\avbar\Documents\GitHub\OpenGl\OpenGl\Release\OpenGl.exe" /INCREMENTAL:NO /NOLOGO C:\Users\avbar\Documents\GitHub\OpenGl\OpenGl\packages\nupengl.core.0.1.0.1\build\native\../..//build/native/lib/Win32\glew32.lib C:\Users\avbar\Documents\GitHub\OpenGl\OpenGl\packages\nupengl.core.0.1.0.1\build\native\../..//build/native/lib/Win32\glfw3dll.lib C:\Users\avbar\Documents\GitHub\OpenGl\OpenGl\packages\nupengl.core.0.1.0.1\build\native\../..//build/native/lib/Win32\freeglut.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\avbar\Documents\GitHub\OpenGl\OpenGl\Release\OpenGl.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X86 /SAFESEH Release\Source.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\avbar\Documents\GitHub\OpenGl\OpenGl\Release\OpenGl.exe" /INCREMENTAL:NO /NOLOGO C:\Users\avbar\Documents\GitHub\OpenGl\OpenGl\packages\nupengl.core.0.1.0.1\build\native\../..//build/native/lib/Win32\glew32.lib C:\Users\avbar\Documents\GitHub\OpenGl\OpenGl\packages\nupengl.core.0.1.0.1\build\native\../..//build/native/lib/Win32\glfw3dll.lib C:\Users\avbar\Documents\GitHub\OpenGl\OpenGl\packages\nupengl.core.0.1.0.1\build\native\../..//build/native/lib/Win32\freeglut.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\avbar\Documents\GitHub\OpenGl\OpenGl\Release\OpenGl.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X86 /SAFESEH Release\OpenGl.obj
          "Release\.NETFramework,Version=v4.5.2.AssemblyAttributes.obj"
          OpenGl.vcxproj -> C:\Users\avbar\Documents\GitHub\OpenGl\OpenGl\Release\OpenGl.exe
      1>Done Building Project "C:\Users\avbar\Documents\GitHub\OpenGl\OpenGl\OpenGl\OpenGl.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.96
+Time Elapsed 00:00:01.10
