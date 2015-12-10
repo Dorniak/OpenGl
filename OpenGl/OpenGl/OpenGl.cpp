@@ -1,10 +1,10 @@
-#include <GL/freeglut.h>
-#include <math.h>
-#include <stdio.h>
 #include "OpenGl.h"
+//Librerias para las listas de puntos
+using namespace System;
+using namespace System::Collections::Generic;
 
 
-
+//Declaracion de funciones especiales para OpenGl
 void init();
 void display(void);
 void keyboard(unsigned char, int , int );
@@ -13,11 +13,8 @@ void drawObject();
 void drawObject2();
 void trabajo();
 void reshape(int width, int heiht);
-struct Punto3d {
-	double x = 0;
-	double y = 0;
-	double z = 0;
-}Punto1,Punto2;
+void drawPuntos();
+void drawObstaculos();
 //  define the window position on screen
 int window_x;
 int window_y;
@@ -36,17 +33,71 @@ char *window_title = "Sample OpenGL FreeGlut App";
 //-------------------------------------------------------------------------
 //  Program Main method.
 //-------------------------------------------------------------------------
-void main(int argc, char **argv)
+void OpenGl::crear()
 {
+	
 	//  Connect to the windowing system + create a window
 	//  with the specified dimensions and position9
 	//  + set the display mode + specify the window title.
+	iniciarPuntos();
+	iniciarObstaculos();
+	int argc = 0;
+	char **argv;
 	glutInit(&argc, argv);
 	trabajo();
 	//  Start GLUT event processing loop
 	glutMainLoop();
-	
 }
+void OpenGl::modificarPuntos(List<Punto3D^>^ listEntradaPuntos)
+{
+	limpiarListas();
+	for (int recorridoP = 0; recorridoP < listEntradaPuntos->Count; recorridoP++) {
+		puntos[recorridoP]->setCoordinatesX(listEntradaPuntos[recorridoP]->getCoordinatesX());
+		puntos[recorridoP]->setCoordinatesY(listEntradaPuntos[recorridoP]->getCoordinatesY());
+		puntos[recorridoP]->setCoordinatesZ(listEntradaPuntos[recorridoP]->getCoordinatesZ());
+	}
+}
+void OpenGl::modificarObstaculos(List<Punto3D^>^ listEntradaObstaculos)
+{
+	for (int recorridoO = 0; recorridoO < listEntradaObstaculos->Count; recorridoO++) {
+		obstaculos[recorridoO]->setCoordinatesX(listEntradaObstaculos[recorridoO]->getCoordinatesX());
+		obstaculos[recorridoO]->setCoordinatesY(listEntradaObstaculos[recorridoO]->getCoordinatesY());
+		obstaculos[recorridoO]->setCoordinatesZ(listEntradaObstaculos[recorridoO]->getCoordinatesZ());
+	}
+}
+void OpenGl::dibujar()
+{
+	glutDisplayFunc(drawPuntos);
+	glutDisplayFunc(drawObstaculos);
+}
+void OpenGl::iniciarPuntos()
+{
+	Punto3D^ a = gcnew Punto3D(0,0,0);
+	for (int llenarPuntos = 0; llenarPuntos < 500; llenarPuntos++) {
+		puntos->Add(a);
+	}
+}
+void OpenGl::iniciarObstaculos()
+{
+	Punto3D^ b = gcnew Punto3D(0, 0, 0);
+	for (int llenarObstaculos = 0; llenarObstaculos < 500; llenarObstaculos++) {
+		obstaculos->Add(b);
+	}
+}
+void OpenGl::limpiarListas()
+{
+	for (int recorrerListaPuntos = 0; recorrerListaPuntos < puntos->Count; recorrerListaPuntos++) {
+		puntos[recorrerListaPuntos]->setCoordinatesX(0);
+		puntos[recorrerListaPuntos]->setCoordinatesY(0);
+		puntos[recorrerListaPuntos]->setCoordinatesZ(0);
+	}
+	for (int recorrerListaObstaculos = 0; recorrerListaObstaculos < obstaculos->Count; recorrerListaObstaculos++) {
+		puntos[recorrerListaObstaculos]->setCoordinatesX(0);
+		puntos[recorrerListaObstaculos]->setCoordinatesY(0);
+		puntos[recorrerListaObstaculos]->setCoordinatesZ(0);
+	}
+}
+
 void trabajo()
 {
 	centerOnScreen();
@@ -57,11 +108,11 @@ void trabajo()
 
 	//  Set OpenGL program initial state.
 	init();
-
 	// Set the callback functions
-	glutDisplayFunc(display);
+	//glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
 }
+
 //-------------------------------------------------------------------------
 //  Set OpenGL program initial state.
 //-------------------------------------------------------------------------
@@ -82,7 +133,6 @@ void display(void)
 	//  This happens by replacing all the contents of the frame
 	//  buffer by the clear color (black in our case)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	//  Draw object
 	drawObject();
 
@@ -108,8 +158,7 @@ void drawObject()
 			for (double k = -1.0; k < y; k = (k + x)) {
 				glVertex3d(i, j, k);
 			}
-			}
-
+		}
 	}
 	glEnd();
 }
@@ -122,9 +171,38 @@ void drawObject2()
 //	glutWireOctahedron();
 	glPointSize(5);
 	glBegin(GL_POINTS);
-	glVertex3d(Punto1.x, Punto1.y, Punto1.z);
-	glVertex3d(Punto2.x, Punto2.y, Punto2.z);
+	//glVertex3d(Punto1.x, Punto1.y, Punto1.z);
+	//glVertex3d(Punto2.x, Punto2.y, Punto2.z);
 	glEnd();
+	glutSwapBuffers();
+}
+void drawPuntos() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glFlush();
+	glPointSize(2);
+	glBegin(GL_POINTS);
+	for (int i = 0; i < OpenGl::puntos->Count; i++) {
+		glVertex3d(OpenGl::puntos[i]->getCoordinatesX(), OpenGl::puntos[i]->getCoordinatesY(), OpenGl::puntos[i]->getCoordinatesZ());
+	}
+	glEnd();
+	glFlush();
+	glutSwapBuffers();
+}
+void drawObstaculos() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	for (int j = 0; j < OpenGl::obstaculos->Count; j=j+4) {
+		glPointSize(2);
+		glBegin(GL_POLYGON);
+		/*for (int k = j; k < j+4; k++) {
+			glVertex3d(OpenGl::obstaculos[k]->getCoordinatesX(), OpenGl::obstaculos[k]->getCoordinatesY(), OpenGl::obstaculos[k]->getCoordinatesZ());
+		}*/
+		glVertex3d(0, 0, 0);
+		glVertex3d(0.5, 0, 0);
+		//glVertex3d(0, 0.5, 0);
+		//glVertex3d(0.5, 0.5, 0);
+		glEnd();
+	}
+	glFlush();
 	glutSwapBuffers();
 }
 
@@ -147,7 +225,6 @@ void reshape(int width, int height)
 	if (hazPerspectiva)
 		gluPerspective(60.0f, (GLfloat)width / (GLfloat)height, 1.0f, 20.0f);
 	else
-
 		glOrtho(-4, 4, -4, 4, 1, 10);
 
 	glMatrixMode(GL_MODELVIEW);
@@ -175,6 +252,10 @@ void keyboard(unsigned char key, int x, int y) {
 		printf("c - Toggle culling\n");
 		printf("ESC = escape");
 		break;
+	case '0':
+		//glutDisplayFunc(drawPuntos);
+		glutDisplayFunc(drawObstaculos);
+		break;
 	case '1':
 		glRotatef(1.0, 1., 0., 0.);
 		break;
@@ -200,7 +281,7 @@ void keyboard(unsigned char key, int x, int y) {
 		glScalef(2, 2, 2);
 		break;
 	case '9':
-		glutDisplayFunc(drawObject2);
+		glutDisplayFunc(display);
 		break;
 	case 27:
 		exit(0);
