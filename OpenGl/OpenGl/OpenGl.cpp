@@ -3,8 +3,9 @@
 using namespace System;
 using namespace System::Collections::Generic;
 
-
-//Declaracion de funciones especiales para OpenGl
+// ----------------------------------------------------------
+// Prototipos de función OpenGl
+// ----------------------------------------------------------
 void init();
 void display(void);
 void keyboard(unsigned char, int , int );
@@ -13,9 +14,11 @@ void drawObject();
 void drawObject2();
 void trabajo();
 void reshape(int width, int heiht);
-void drawPuntos();
-void drawObstaculos();
-//  define the window position on screen
+void specialKeys(int key, int x, int y);
+// ----------------------------------------------------------
+// Variables globales
+// ----------------------------------------------------------
+//Variables de tamaño de pantalla
 int window_x;
 int window_y;
 
@@ -26,19 +29,15 @@ GLint alto = 400;
 //  variables representing the window size
 int window_width = 480;
 int window_height = 480;
+//Variables de rotacion
+double rotate_y = 0;
+double rotate_x = 0;
 
 //  variable representing the window title
 char *window_title = "Sample OpenGL FreeGlut App";
 
-//-------------------------------------------------------------------------
-//  Program Main method.
-//-------------------------------------------------------------------------
-void OpenGl::crear()
+void OpenGl::threadconstructor()
 {
-	
-	//  Connect to the windowing system + create a window
-	//  with the specified dimensions and position9
-	//  + set the display mode + specify the window title.
 	iniciarPuntos();
 	iniciarObstaculos();
 	int argc = 0;
@@ -46,7 +45,17 @@ void OpenGl::crear()
 	glutInit(&argc, argv);
 	trabajo();
 	//  Start GLUT event processing loop
+	glutDisplayFunc(display);
 	glutMainLoop();
+}
+
+//-------------------------------------------------------------------------
+//  Program Main method.
+//-------------------------------------------------------------------------
+void OpenGl::constructor()
+{
+	Thread^ ThreadDIO = gcnew Thread(gcnew ThreadStart(this, &OpenGl::threadconstructor));
+	ThreadDIO->Start();
 }
 void OpenGl::modificarPuntos(List<Punto3D^>^ listEntradaPuntos)
 {
@@ -67,20 +76,22 @@ void OpenGl::modificarObstaculos(List<Punto3D^>^ listEntradaObstaculos)
 }
 void OpenGl::dibujar()
 {
-	glutDisplayFunc(drawPuntos);
-	glutDisplayFunc(drawObstaculos);
+	glutDisplayFunc(display);
+	glFlush();
 }
 void OpenGl::iniciarPuntos()
 {
-	Punto3D^ a = gcnew Punto3D(0,0,0);
-	for (int llenarPuntos = 0; llenarPuntos < 500; llenarPuntos++) {
+	Punto3D^ a;
+	for (int llenarPuntos = 0; llenarPuntos < 15000; llenarPuntos++) {
+		a = gcnew Punto3D(0, 0, 0);
 		puntos->Add(a);
 	}
 }
 void OpenGl::iniciarObstaculos()
 {
-	Punto3D^ b = gcnew Punto3D(0, 0, 0);
-	for (int llenarObstaculos = 0; llenarObstaculos < 500; llenarObstaculos++) {
+	Punto3D^ b;
+	for (int llenarObstaculos = 0; llenarObstaculos < 400; llenarObstaculos++) {
+		b = gcnew Punto3D(0, 0, 0);
 		obstaculos->Add(b);
 	}
 }
@@ -111,6 +122,7 @@ void trabajo()
 	// Set the callback functions
 	//glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
+	glutSpecialFunc(specialKeys);
 }
 
 //-------------------------------------------------------------------------
@@ -121,23 +133,6 @@ void init()
 	glEnable(GL_DEPTH_TEST);
 	//  Set the frame buffer clear color to black. 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
-}
-
-//-------------------------------------------------------------------------
-//  This function is passed to glutDisplayFunc in order to display 
-//  OpenGL contents on the window.
-//-------------------------------------------------------------------------
-void display(void)
-{
-	//  Clear the window or more specifically the frame buffer...
-	//  This happens by replacing all the contents of the frame
-	//  buffer by the clear color (black in our case)
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//  Draw object
-	drawObject();
-
-	//  Swap contents of backward and forward frame buffers
-	glutSwapBuffers();
 }
 
 //-------------------------------------------------------------------------
@@ -176,7 +171,13 @@ void drawObject2()
 	glEnd();
 	glutSwapBuffers();
 }
-void drawPuntos() {
+//-------------------------------------------------------------------------
+//  Funcion que se encarga de meter en el buffer de pintura las dos listas
+//-------------------------------------------------------------------------
+void display() {
+	//-------------------------------------------------------------------------
+	//  Mete en el buffer la lista de puntos
+	//-------------------------------------------------------------------------
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glFlush();
 	glPointSize(2);
@@ -185,27 +186,21 @@ void drawPuntos() {
 		glVertex3d(OpenGl::puntos[i]->getCoordinatesX(), OpenGl::puntos[i]->getCoordinatesY(), OpenGl::puntos[i]->getCoordinatesZ());
 	}
 	glEnd();
-	glFlush();
-	glutSwapBuffers();
-}
-void drawObstaculos() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	for (int j = 0; j < OpenGl::obstaculos->Count; j=j+4) {
-		glPointSize(2);
-		glBegin(GL_POLYGON);
-		/*for (int k = j; k < j+4; k++) {
-			glVertex3d(OpenGl::obstaculos[k]->getCoordinatesX(), OpenGl::obstaculos[k]->getCoordinatesY(), OpenGl::obstaculos[k]->getCoordinatesZ());
-		}*/
-		glVertex3d(0, 0, 0);
-		glVertex3d(0.5, 0, 0);
-		//glVertex3d(0, 0.5, 0);
-		//glVertex3d(0.5, 0.5, 0);
+	//-------------------------------------------------------------------------
+	//  Mete en el buffer la lista de obstaculos
+	//-------------------------------------------------------------------------
+	glPointSize(2);
+	glBegin(GL_LINE_STRIP);
+	for (int j = 0; j < OpenGl::obstaculos->Count; j = j + 4) {
+		for (int k = j; k < j+4; k++) {
+		glVertex3d(OpenGl::obstaculos[k]->getCoordinatesX(), OpenGl::obstaculos[k]->getCoordinatesY(), OpenGl::obstaculos[k]->getCoordinatesZ());
+		}
 		glEnd();
 	}
 	glFlush();
 	glutSwapBuffers();
-}
 
+}
 
 //-------------------------------------------------------------------------
 //  This function sets the window x and y coordinates
@@ -252,24 +247,8 @@ void keyboard(unsigned char key, int x, int y) {
 		printf("c - Toggle culling\n");
 		printf("ESC = escape");
 		break;
-	case '0':
-		//glutDisplayFunc(drawPuntos);
-		glutDisplayFunc(drawObstaculos);
-		break;
-	case '1':
-		glRotatef(1.0, 1., 0., 0.);
-		break;
-	case '3':
-		glRotatef(1.0, 0., 1., 0.);
-		break;
 	case '5':
 		glRotatef(1.0, 0., 0., 1.);
-		break;
-	case '2':
-		glRotatef(1.0, -1., 0., 0.);
-		break;
-	case '4':
-		glRotatef(1.0, 0., -1., 0.);
 		break;
 	case '6':
 		glRotatef(1.0, 0., 0., -1.);
@@ -281,11 +260,27 @@ void keyboard(unsigned char key, int x, int y) {
 		glScalef(2, 2, 2);
 		break;
 	case '9':
-		glutDisplayFunc(display);
+		OpenGl::puntos[1]->setCoordinatesX(2);
 		break;
 	case 27:
 		exit(0);
 		break;
 	}
+	glutPostRedisplay();
+}
+void specialKeys(int key, int x, int y) {
+	//glLoadIdentity();
+	if (key == GLUT_KEY_RIGHT) {
+		glRotatef(1, 0.0, 1.0, 0.0);
+	}
+	else if (key == GLUT_KEY_LEFT) {
+		glRotatef(1, 0.0, 1.0, 0.0);
+	}
+	else if (key == GLUT_KEY_UP)
+		glRotatef(1, 1.0, 0.0, 0.0);
+
+	else if (key == GLUT_KEY_DOWN)
+		glRotatef(1, 1.0, 0.0, 0.0);
+	//  Solicitud para actualizar la pantalla
 	glutPostRedisplay();
 }

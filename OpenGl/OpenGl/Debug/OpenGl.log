@@ -1,3 +1,3 @@
 ﻿  OpenGl.cpp
-d:\documentos\github\opengl\opengl\opengl\opengl.cpp(46): warning C4700: uninitialized local variable 'argv' used
+d:\documentos\github\opengl\opengl\opengl\opengl.cpp(45): warning C4700: uninitialized local variable 'argv' used
   OpenGl.vcxproj -> D:\Documentos\GitHub\OpenGl\OpenGl\Debug\OpenGl.exe
