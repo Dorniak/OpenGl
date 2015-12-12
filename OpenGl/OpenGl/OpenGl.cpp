@@ -259,6 +259,12 @@ void keyboard(unsigned char key, int x, int y) {
 	case '8':
 		glScalef(2, 2, 2);
 		break;
+	case 'k':
+		glScalef(0.0000000000000001, 0.0000000000000001, 0.0000000000000001);
+		break;
+	case 'a':
+		gluLookAt(-0.1, 0, 0, 0, 0, 0, 0, 1, 0);
+		break;
 	case '9':
 		OpenGl::puntos[1]->setCoordinatesX(2);
 		break;

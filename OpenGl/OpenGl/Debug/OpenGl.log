@@ -1,3 +1,4 @@
 ﻿  OpenGl.cpp
+OpenGl.cpp(263): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
 d:\documentos\github\opengl\opengl\opengl\opengl.cpp(45): warning C4700: uninitialized local variable 'argv' used
   OpenGl.vcxproj -> D:\Documentos\GitHub\OpenGl\OpenGl\Debug\OpenGl.exe
