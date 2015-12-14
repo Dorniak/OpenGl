@@ -280,13 +280,13 @@ void specialKeys(int key, int x, int y) {
 		glRotatef(1, 0.0, 1.0, 0.0);
 	}
 	else if (key == GLUT_KEY_LEFT) {
-		glRotatef(1, 0.0, 1.0, 0.0);
+		glRotatef(-1, 0.0, 1.0, 0.0);
 	}
 	else if (key == GLUT_KEY_UP)
 		glRotatef(1, 1.0, 0.0, 0.0);
 
 	else if (key == GLUT_KEY_DOWN)
-		glRotatef(1, 1.0, 0.0, 0.0);
+		glRotatef(-1, 1.0, 0.0, 0.0);
 	//  Solicitud para actualizar la pantalla
 	glutPostRedisplay();
 }
