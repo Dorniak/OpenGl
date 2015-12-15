@@ -13,8 +13,8 @@ void centerOnScreen();
 void drawObject();
 void drawObject2();
 void trabajo();
-void reshape(int width, int heiht);
 void specialKeys(int key, int x, int y);
+void timerFunc(int time);
 // ----------------------------------------------------------
 // Variables globales
 // ----------------------------------------------------------
@@ -27,14 +27,12 @@ int hazPerspectiva = 0;
 GLint ancho = 400;
 GLint alto = 400;
 //  variables representing the window size
-int window_width = 480;
-int window_height = 480;
-//Variables de rotacion
-double rotate_y = 0;
-double rotate_x = 0;
+int window_width = 600;
+int window_height = 600;
 
 //  variable representing the window title
 char *window_title = "Sample OpenGL FreeGlut App";
+
 
 void OpenGl::threadconstructor()
 {
@@ -59,6 +57,7 @@ void OpenGl::constructor()
 }
 void OpenGl::modificarPuntos(List<Punto3D^>^ listEntradaPuntos)
 {
+	listo = false;
 	limpiarListas();
 	for (int recorridoP = 0; recorridoP < listEntradaPuntos->Count; recorridoP++) {
 		puntos[recorridoP]->setCoordinatesX(listEntradaPuntos[recorridoP]->getCoordinatesX());
@@ -82,7 +81,7 @@ void OpenGl::dibujar()
 void OpenGl::iniciarPuntos()
 {
 	Punto3D^ a;
-	for (int llenarPuntos = 0; llenarPuntos < 15000; llenarPuntos++) {
+	for (int llenarPuntos = 0; llenarPuntos < 150000; llenarPuntos++) {
 		a = gcnew Punto3D(0, 0, 0);
 		puntos->Add(a);
 	}
@@ -123,6 +122,7 @@ void trabajo()
 	//glutDisplayFunc(display);
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(specialKeys);
+	glutTimerFunc(2000, timerFunc, 0);
 }
 
 //-------------------------------------------------------------------------
@@ -175,13 +175,35 @@ void drawObject2()
 //  Funcion que se encarga de meter en el buffer de pintura las dos listas
 //-------------------------------------------------------------------------
 void display() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glFlush();
+	//Pintar ejes
+	glPointSize(2);
+	glBegin(GL_LINES);
+	glColor3f(1.0f, 0.6f, 0.6f);  // activamos el color rojo claro
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(1000.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(-1000.0f, 0.0f, 0.0f);
+	glColor3f(0.6f, 1.0f, 0.6f);  // activamos el color verde claro
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 1000.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, -1000.0f, 0.0f);
+	glColor3f(0.6f, 0.6f, 1.0f);  // activamos el color azul claro
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 1000.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, -1000.0f);
+	glEnd();
+
+	glColor3f(1.0f, 1.0f, 1.0f);      // activamos el color blanco
 	//-------------------------------------------------------------------------
 	//  Mete en el buffer la lista de puntos
 	//-------------------------------------------------------------------------
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glFlush();
 	glPointSize(2);
 	glBegin(GL_POINTS);
+	glColor3f(0.8f, 0.6f, 1.0f);  // activamos el color rojo claro
 	for (int i = 0; i < OpenGl::puntos->Count; i++) {
 		glVertex3d(OpenGl::puntos[i]->getCoordinatesX(), OpenGl::puntos[i]->getCoordinatesY(), OpenGl::puntos[i]->getCoordinatesZ());
 	}
@@ -191,6 +213,7 @@ void display() {
 	//-------------------------------------------------------------------------
 	glPointSize(2);
 	glBegin(GL_LINE_STRIP);
+	glColor3f(1.0f, 1.0f, 1.0f);      // activamos el color blanco
 	for (int j = 0; j < OpenGl::obstaculos->Count; j = j + 4) {
 		for (int k = j; k < j+4; k++) {
 		glVertex3d(OpenGl::obstaculos[k]->getCoordinatesX(), OpenGl::obstaculos[k]->getCoordinatesY(), OpenGl::obstaculos[k]->getCoordinatesZ());
@@ -201,7 +224,12 @@ void display() {
 	glutSwapBuffers();
 
 }
-
+void timerFunc(int time) {
+		glutPostRedisplay();
+		glFlush();
+		OpenGl::listo = true;
+	glutTimerFunc(50, timerFunc, 0);
+}
 //-------------------------------------------------------------------------
 //  This function sets the window x and y coordinates
 //  such that the window becomes centered
@@ -211,26 +239,10 @@ void centerOnScreen()
 	window_x = (glutGet(GLUT_SCREEN_WIDTH) - window_width) / 2;
 	window_y = (glutGet(GLUT_SCREEN_HEIGHT) - window_height) / 2;
 }
-void reshape(int width, int height)
-{
-	glViewport(0, 0, width, height);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	if (hazPerspectiva)
-		gluPerspective(60.0f, (GLfloat)width / (GLfloat)height, 1.0f, 20.0f);
-	else
-		glOrtho(-4, 4, -4, 4, 1, 10);
-
-	glMatrixMode(GL_MODELVIEW);
-
-	ancho = width;
-	alto = height;
-}
 
 void keyboard(unsigned char key, int x, int y) {
 	switch (key) {
-	case 'p':
+	/*case 'p':
 	case 'P':
 		hazPerspectiva = 1;
 		reshape(ancho, alto);
@@ -240,7 +252,7 @@ void keyboard(unsigned char key, int x, int y) {
 	case 'O':
 		hazPerspectiva = 0;
 		reshape(ancho, alto);
-		break;
+		break;*/
 	case 'h':
 		printf("o = Perspectiva ortogonal");
 		printf("p = perspectiva de proyeccion");
@@ -259,17 +271,27 @@ void keyboard(unsigned char key, int x, int y) {
 	case '8':
 		glScalef(2, 2, 2);
 		break;
-	case 'k':
-		glScalef(0.0000000000000001, 0.0000000000000001, 0.0000000000000001);
-		break;
 	case 'a':
 		gluLookAt(-0.1, 0, 0, 0, 0, 0, 0, 1, 0);
+		break;
+	case 'r':
+		glScalef(1.0, 1.0, 1.0);
 		break;
 	case '9':
 		OpenGl::puntos[1]->setCoordinatesX(2);
 		break;
 	case 27:
 		exit(0);
+		break;
+	case 43:
+		glScalef(1.1, 1.1, 1.1);
+		break;
+	case 45:
+		glScalef(0.9, 0.9, 0.9);
+		break;
+	case 32:
+		glLoadIdentity();
+		glScalef(0.05, 0.05, 0.05);
 		break;
 	}
 	glutPostRedisplay();
